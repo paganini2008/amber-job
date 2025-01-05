@@ -1,4 +1,4 @@
-package com.doodler.amber.utils;
+package com.github.doodler.amber.utils;
 
 import java.util.ArrayList;
 import java.util.List;

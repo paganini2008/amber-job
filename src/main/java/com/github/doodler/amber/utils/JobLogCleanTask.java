@@ -1,4 +1,4 @@
-package com.doodler.amber.utils;
+package com.github.doodler.amber.utils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
