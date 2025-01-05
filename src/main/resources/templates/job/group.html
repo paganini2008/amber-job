@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="common/header::header"></div>
+<script type="text/javascript">
+	$(function(){
+		
+		$('.resumeJobGroup').click(function(){
+			var jobGroup = $.trim($(this).parent().parent().find('td:eq(1)').text());
+			$.ajax({
+				  url: "/job/man/resume/" + jobGroup,
+				  type: "PUT",
+				  headers: { 
+				      "Content-Type": "application/json"
+				  },
+				  success: function(data){
+					  alert('ok');
+					  window.location.reload();
+				  }
+			});
+		});
+		
+		$('.pauseJobGroup').click(function(){
+			var jobGroup = $.trim($(this).parent().parent().find('td:eq(1)').text());
+			$.ajax({
+				  url: "/job/man/pause/" + jobGroup,
+				  type: "PUT",
+				  headers: { 
+				      "Content-Type": "application/json"
+				  },
+				  success: function(data){
+					  alert('ok');
+					  window.location.reload();
+				  }
+			});
+		});
+		
+		$('.deleteJobGroup').click(function(){
+			var con = window.confirm("Are you sure to delete this group?");
+			if(con == false){
+				return;
+			}
+			var jobGroup = $.trim($(this).parent().parent().find('td:eq(1)').text());
+			$.ajax({
+				  url: "/job/man/delete/" + jobGroup,
+				  type: "DELETE",
+				  headers: { 
+				      "Content-Type": "application/json"
+				  },
+				  success: function(data){
+					  alert('ok');
+					  window.location.reload();
+				  }
+			});
+		});
+	});
+</script>
+<body>
+    <div th:replace="common/nav::nav"></div>
+    <div id="container" th:fragment="content">
+    	<div>
+    		<input id="createNewJob" type="button" class="btn" value="Create New Job" onclick="window.location.href='/ui/job/new/'"></input>
+    	</div>
+        <table class="tblCom" cellspacing="0" cellpadding="0">
+		  <thead>
+		    <tr>
+		      <td width="3%">No. </td>
+		      <td class="tdLeft10">Job Group</td>
+		      <td width="8%" class="tdLeft10">Total Job Count</td>
+		      <td width="10%" class="tdLeft10">Running Job Count</td>
+		      <td width="10%" class="tdLeft10">Completed Job Count</td>
+		      <td width="10%" class="tdLeft10">Failed Job Count</td>
+		      <td width="15%">Action</td>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr th:each="group,index : ${jobGroups}">
+		      <td width="3%" th:text="${index.count}"></td>
+		      <td class="tdLeft10" th:text="${group.jobGroup}"></td>
+		      <td width="8%" class="tdLeft10" th:text="${group.jobCount}"></td>
+		      <td width="10%" class="tdLeft10" th:text="${group.runningJobCount}"></td>
+		      <td width="10%" class="tdLeft10" th:text="${group.completedJobCount}"></td>
+		      <td width="10%" class="tdLeft10" th:text="${group.errorCount}"></td>
+		      <td width="15%">
+		      	<a th:href="@{'/ui/job/list/'+${group.jobGroup}+'/'}">View</a>
+		      	<a class="logJob" th:href="@{'/ui/job/log/'+${group.jobGroup}+'/'}">Log</a>
+		      	<a class="pauseJobGroup" href="javascript:void(0);">Pause</a>
+		      	<a class="resumeJobGroup" href="javascript:void(0);">Resume</a>
+		      	<a class="deleteJobGroup" href="javascript:void(0);">Delete</a>
+		      </td>
+		    </tr>
+		  </tbody>
+		</table>
+    </div>
+    
+    <div th:replace="common/footer::footer"></div>
+</body>
+</html>

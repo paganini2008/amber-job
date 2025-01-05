@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="common/header::header"></div>
+<body>
+    <div th:replace="common/nav::nav"></div>
+    
+    <div id="container" th:fragment="content">
+        <h1>Spring Boot Version: 2.7.18</h1>
+        <h1>Quartz Version: 2.3.2</h1>
+    </div>
+    
+    <div th:replace="common/footer::footer"></div>
+</body>
+</html>

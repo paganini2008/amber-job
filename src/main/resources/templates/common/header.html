@@ -1,0 +1,14 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="header" th:with="contextPath=${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()}">
+    <meta charset="UTF-8">
+    <title>Quartz Administrator Console</title>
+    <link th:href="${contextPath}+'/static/css/base.css'" rel="stylesheet" type="text/css" />
+    <link th:href="${contextPath}+'/static/css/jquery-ui-1.8.7.custom.css'" rel="stylesheet" type="text/css" />
+    <link th:href="${contextPath}+'/static/css/jquery.resizableColumns.css'" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" th:src="${contextPath}+'/static/js/lib/jquery-1.7.1.min.js'"></script>
+    <script type="text/javascript" th:src="${contextPath}+'/static/js/lib/colResizable-1.6.min.js'"></script>
+    <script type="text/javascript" th:src="${contextPath}+'/static/js/lib/json2.js'"></script>
+    <script type="text/javascript" th:src="${contextPath}+'/static/js/lib/jquery.divbox.js'"></script>
+    <script type="text/javascript" th:src="${contextPath}+'/static/js/common.js'"></script>
+</head>
+</html>

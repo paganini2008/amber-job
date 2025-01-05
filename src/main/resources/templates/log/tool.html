@@ -1,0 +1,15 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<div id="tool" th:fragment="tool">
+		<label>Job Name:</label>
+    	<input type="text" id="jobNamePattern" style="width: 13%" th:value="${jobName}"/>
+    	<label>Job Group:</label>
+    	<input type="text" id="jobGroupPattern" style="width: 13%" th:value="${jobGroup}"/>
+    	<label>Trigger Name:</label>
+    	<input type="text" id="triggerNamePattern" style="width: 13%" th:value="${triggerName}"/>
+    	<label>Trigger Group:</label>
+    	<input type="text" id="triggerGroupPattern" style="width: 13%" th:value="${triggerGroup}"/>
+    	<label>Failed Job:</label>
+    	<input type="checkbox" id="failedJobChecked" th:checked="${status} eq 0"/>
+    	<input class="btn" id="searchBtn" type="button" value="Search"/>
+	</div>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="common/header::header"></div>
+<script type="text/javascript">
+  $(function () {
+    $('.tblCom').colResizable({
+      liveDrag: true,
+      gripInnerHtml: "<div class='grip'></div>",
+      draggingClass: "dragging",
+      resizeMode: 'fit',
+      disabledColumns: [0, 12, 13]
+    });
+
+    $('.pauseTrigger').click(function () {
+      var triggerName = $.trim($(this).parent().parent().find('td:eq(1)').text());
+      var triggerGroup = $.trim($(this).parent().parent().find('td:eq(2)').text());
+      $.ajax({
+        url: "/job/man/trigger/pause/" + triggerGroup + "/" + triggerName,
+        type: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        success: function (data) {
+          alert('ok');
+          window.location.reload();
+        }
+      });
+    });
+
+    $('.resumeTrigger').click(function () {
+      var triggerName = $.trim($(this).parent().parent().find('td:eq(1)').text());
+      var triggerGroup = $.trim($(this).parent().parent().find('td:eq(2)').text());
+      $.ajax({
+        url: "/job/man/trigger/resume/" + triggerGroup + "/" + triggerName,
+        type: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        success: function (data) {
+          alert('ok');
+          window.location.reload();
+        }
+      });
+    });
+
+    TableUtils.initialize(10);
+  });
+</script>
+<body>
+<div th:replace="common/nav::nav"></div>
+
+<div id="container" th:fragment="content" th:with="pageTimeZone='UTC'">
+  <table class="tblCom" cellspacing="0" cellpadding="0">
+    <thead>
+    <tr>
+      <td width="3%">No.</td>
+      <td class="tdLeft5" width="15%">Trigger Name</td>
+      <td class="tdLeft5">Trigger Group</td>
+      <td width="6%">State</td>
+      <td width="6%">Type</td>
+      <td width="8%">Start Time</td>
+      <td width="8%">Next Fired Time</td>
+      <td width="8%">Prev Fired Time</td>
+      <td width="8%">Final Fired Time</td>
+      <td width="8%">End Time</td>
+      <td width="4%">Priority</td>
+      <td width="5%">Calendar</td>
+      <td width="5%">Misfire Instr</td>
+      <td width="4%">Action</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="trigger, index : ${page.content}">
+      <td width="3%" th:text="${(page.pageNumber-1) * page.pageSize + index.count}"></td>
+      <td class="tdLeft5" width="15%" th:text="${trigger.triggerName}"></td>
+      <td class="tdLeft5" th:text="${trigger.triggerGroup}"></td>
+      <td width="6%" th:text="${trigger.state}"></td>
+      <td width="6%" th:text="${trigger.type}"></td>
+      <td width="8%"
+          th:text="${@requestParameterUtils.formatDateWithTimeZone(trigger.startTime, pageTimeZone)}"></td>
+      <td width="8%"
+          th:text="${@requestParameterUtils.formatDateWithTimeZone(trigger.nextFireTime, pageTimeZone)}"></td>
+      <td width="8%"
+          th:text="${@requestParameterUtils.formatDateWithTimeZone(trigger.prevFireTime, pageTimeZone)}"></td>
+      <td width="8%"
+          th:text="${@requestParameterUtils.formatDateWithTimeZone(trigger.finalFireTime, pageTimeZone)}"></td>
+      <td width="8%"
+          th:text="${@requestParameterUtils.formatDateWithTimeZone(trigger.endTime, pageTimeZone)}"></td>
+      <td width="4%" th:text="${trigger.priority}"></td>
+      <td width="5%" th:text="${trigger.calendarName}"></td>
+      <td width="5%" th:text="${trigger.misfireInstr}"></td>
+      <td width="4%">
+        <a th:if="${trigger.state=='PAUSED'}" class="resumeTrigger" href="javascript:void(0);">Resume</a>
+        <a th:if="${trigger.state!='PAUSED'}" class="pauseTrigger"
+           href="javascript:void(0);">Pause</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div th:replace="common/page::page"></div>
+</div>
+
+<div th:replace="common/footer::footer"></div>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:with="contextPath=${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()}">
+<div th:replace="common/header::header"></div>
+<script type="text/javascript" th:src="${contextPath}+'/static/js/lib/jquery-ui-1.8.21.custom.min.js'"></script>
+<script type="text/javascript" th:src="${contextPath}+'/static/js/lib/jquery-ui-timepicker-addon.js'"></script>
+<script type="text/javascript">
+	$(function(){
+		$("#triggerStartTime").datetimepicker({
+			dateFormat: 'yy-mm-dd',
+		    timeFormat: 'HH:mm:ss'
+		});
+		
+		$("#triggerEndTime").datetimepicker({
+			dateFormat: 'yy-mm-dd',
+		    timeFormat: 'HH:mm:ss'
+		});
+	});
+</script>
+<body>
+    <div th:replace="common/nav::nav"></div>
+    <div id="container" th:fragment="content" th:with="contextPath=${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()}">
+        <form method="post" action="/ui/job/save/">
+        <div th:if="${tip}!=null" id="errorBox">
+        	<p class="errorTip" th:each="error :${tip.content}" th:text="${error}"></p>
+        </div>
+    	<div id="newJobBox" class="createNew">
+    		<fieldset>
+    		<legend>Job Configuration: </legend>
+	        <div class="newJob">
+	        	<label><font color="red">*</font>Job Name: </label>
+	        	<input type="text" name="jobName"></input>
+	        </div>
+	        <div class="newJob">
+	        	<label>Job Group(optional): </label>
+	        	<input type="text" name="jobGroup"></input>
+	        </div>
+	        <div class="newJob">
+	        	<label>Application Name(optional unless using job class and method): </label>
+	        	<input type="text" name="applicationName"></input>
+	        </div>
+	        <div class="newJob">
+	        	<label><font color="red">*</font>Job URL(optional eg: http://www.google.com): </label>
+	        	<input type="text" name="url"></input>
+	        </div>
+	        <div class="newJob">
+	        	<label><font color="red">*</font>Job Class Name: </label>
+	        	<input type="text" name="className"></input>
+	        </div>
+	        <div class="newJob">
+	        	<label><font color="red">*</font>Method Name: </label>
+	        	<input type="text" name="method"></input>
+	        </div>
+	        <div class="newJob">
+	        	<label>Maximum Retry Count(optional): </label>
+	        	<input type="text" name="maxRetryCount" value="-1"></input>
+	        </div>
+	        <div class="newJob">
+	        	<label>Initial Parameter(optional eg: {"userId": 1001, "level": "p1"}): </label>
+	        	<input type="text" name="initialParameter"></input>
+	        </div>
+	        <div class="newJob">
+	        	<label>Default Http Header(optional eg: Authorization=Bearer xxx ): </label>
+	        	<input type="text" name="defaultHeaders"></input>
+	        </div>
+	        <div class="newJob">
+	        	<label>Job Description(optional): </label>
+	        	<input type="text" name="description"></input>
+	        </div>
+	        </fieldset>
+        </div>
+        
+        <div id="newTriggerBox" class="createNew">
+        	<fieldset>
+    		<legend>Trigger Configuration: </legend>
+        	<div class="newTrigger">
+	        	<label>Trigger Name(optional): </label>
+	        	<input type="text" name="triggerDefination.triggerName"></input>
+	        </div>
+	        <div class="newTrigger">
+	        	<label>Trigger Group(optional): </label>
+	        	<input type="text" name="triggerDefination.triggerGroup"></input>
+	        </div>
+	        <div class="newTrigger">
+	        	<label><font color="red">*</font>Cron Expression(optional): </label>
+	        	<input type="text" name="triggerDefination.cron"></input>
+	        </div>
+	        <div class="newTrigger">
+	        	<label><font color="red">*</font>Trigger Start Time(optional unless using cron expression): </label>
+	        	<input type="text" id="triggerStartTime" name="triggerDefination.startTime"></input>
+	        </div>
+	        <div class="newTrigger">
+	        	<label><font color="red">*</font>Period in Millisecond(optional unless using cron expression): </label>
+	        	<input type="text" name="triggerDefination.period"></input>
+	        </div>
+	        <div class="newTrigger">
+	        	<label>Trigger Repeat Count(optional): </label>
+	        	<input type="text" name="triggerDefination.repeatCount" value="-1"></input>
+	        </div>
+	        <div class="newTrigger">
+	        	<label>Trigger End Time(optional): </label>
+	        	<input type="text" id="triggerEndTime" name="triggerDefination.endTime"></input>
+	        </div>
+	        <div class="newTrigger">
+	        	<label>Trigger Priority(optional): </label>
+	        	<input type="text" name="triggerDefination.endTime" value="5"></input>
+	        </div>
+	        <div class="newTrigger">
+	        	<label>Trigger Calendar Name(optional): </label>
+	        	<input type="text" name="triggerDefination.calendarName"></input>
+	        </div>
+	        <div class="newTrigger">
+	        	<label>Trigger Description(optional): </label>
+	        	<input type="text" name="triggerDefination.description"></input>
+	        </div>
+	        <div class="newTrigger">
+        		<label>&nbsp;</label>
+        		<input class="btn" type="submit" value="Save New Job" id="createNewBtn"></input>
+        	</div>
+	        </fieldset>
+        </div>
+        <div class="createNew" style="height: 20px;">
+        </div>
+        </form>
+    </div>
+    
+    <div th:replace="common/footer::footer"></div>
+</body>
+</html>

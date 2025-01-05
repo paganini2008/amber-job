@@ -1,0 +1,21 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div id="pageBox" th:fragment="page">
+
+        <div id="pageLabel" th:with="currentRequestPath=${#httpServletRequest.getRequestURI},queryStr=${@requestParameterUtils.getQueryString(#httpServletRequest)}">
+            <a th:href="@{${currentRequestPath}+'?pageNumber=1'+'&'+${queryStr}}">First Page</a>
+            <b>|</b>
+            <a th:if="${page.pageNumber>1}" th:href="@{${currentRequestPath}+'?pageNumber='+${page.pageNumber-1}+'&'+${queryStr}}">Previous Page</a>
+            <a th:if="${page.pageNumber==1}" th:href="@{${currentRequestPath}+'?pageNumber=1'+'&'+${queryStr}}">Previous Page</a>
+            <b>|</b>
+            <a th:if="${page.pageNumber<page.totalPages}" th:href="@{${currentRequestPath}+'?pageNumber='+${page.pageNumber+1}+'&'+${queryStr}}">Next Page</a>
+            <a th:if="${page.pageNumber==page.totalPages}" th:href="@{${currentRequestPath}+'?pageNumber='+${page.totalPages}+'&'+${queryStr}}">Next Page</a>
+            <b>|</b>
+            <a th:href="@{${currentRequestPath}+'?pageNumber='+${page.totalPages}+'&'+${queryStr}}">Last Page</a>
+        </div>
+        
+        <div id="pageSummary">
+            <b>Page:</b> <span th:text="${page.pageNumber}"></span>/<span th:text="${page.totalPages}"></span>&nbsp;&nbsp;
+            <b>Total Records:</b> <span th:text="${page.totalRecords}"></span>
+        </div>
+</div>
+</html>

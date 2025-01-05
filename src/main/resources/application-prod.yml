@@ -1,0 +1,26 @@
+#spring settings
+spring:
+  boot:
+    admin:
+      client:
+        url: http://172.26.6.47:8525
+        instance:
+          prefer-ip: true
+  redis:
+    database: 0
+    password: 123456
+    sentinel:
+      master: mymaster
+      nodes: redis-sentinel1:26379,redis-sentinel2:26380,redis-sentinel3:26381
+  datasource:
+    druid:
+      url: jdbc:postgresql://172.26.7.0:5432/maxibetdb?characterEncoding=utf8&allowMultiQueries=true&useSSL=false&stringtype=unspecified
+      username: maxibet
+      password: globalTLLC09
+  rabbitmq:
+    addresses: mq-node1:5672,mq-node2:5672
+    username: fred
+    password: 123456
+    virtual-host: /kos
+
+  

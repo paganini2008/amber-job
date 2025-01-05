@@ -1,0 +1,8 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<div id="tool" th:fragment="tool">
+		<label>Job Name:</label>
+    	<input type="text" id="jobNamePattern" th:value="${jobName}"/>
+    	<input id="createNewJob" type="button" class="btn" value="Create New Job" onclick="window.location.href='/ui/job/new/'"></input>
+    	<input class="btn" id="searchBtn" type="button" value="Search"/>
+	</div>
+</html>

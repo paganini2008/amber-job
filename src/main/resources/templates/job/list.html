@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:with="currentRequestPath=${#httpServletRequest.getRequestURI}">
+<div th:replace="common/header::header"></div>
+<script type="text/javascript">
+	$(function(){
+		
+		$('.tblCom').colResizable({
+			  liveDrag:true, 
+	          gripInnerHtml:"<div class='grip'></div>", 
+	          draggingClass:"dragging", 
+	          resizeMode:'fit',
+	          disabledColumns: [0,5,6,7]
+		});
+		
+		$('#searchBtn').click(function(){
+			var jobNamePattern = $.trim($('#jobNamePattern').val());
+			if(jobNamePattern == null || jobNamePattern.length == 0){
+				return;
+			}
+			var url = window.location.href;
+			if(url.indexOf('?') > 0){
+				url = url + '&jobNamePattern=' + jobNamePattern;
+			}else{
+				url = url + '?jobNamePattern=' + jobNamePattern;
+			}
+			window.location.href = url;
+		});
+		
+		$('.pauseJob').click(function(){
+			var jobName = $.trim($(this).parent().parent().find('td:eq(1)').text());
+			var jobGroup = $.trim($(this).parent().parent().find('td:eq(2)').text());
+			$.ajax({
+				  url: "/job/man/pause/" + jobGroup + "/" + jobName,
+				  type: "PUT",
+				  headers: { 
+				      "Content-Type": "application/json"
+				  },
+				  success: function(data){
+					  alert('ok');
+					  window.location.reload();
+				  }
+			});
+		});
+		
+		$('.resumeJob').click(function(){
+			var jobName = $.trim($(this).parent().parent().find('td:eq(1)').text());
+			var jobGroup = $.trim($(this).parent().parent().find('td:eq(2)').text());
+			$.ajax({
+				  url: "/job/man/resume/" + jobGroup + "/" + jobName,
+				  type: "PUT",
+				  headers: { 
+				      "Content-Type": "application/json"
+				  },
+				  success: function(data){
+					  alert('ok');
+					  window.location.reload();
+				  }
+			});
+		});
+		
+		$('.deleteJob').click(function(){
+			var con=window.confirm("Are you sure to delete this job?");
+			if(con == false){
+				return;
+			}
+			var jobName = $.trim($(this).parent().parent().find('td:eq(1)').text());
+			var jobGroup = $.trim($(this).parent().parent().find('td:eq(2)').text());
+			$.ajax({
+				  url: "/job/man/delete/" + jobGroup + "/" + jobName,
+				  type: "DELETE",
+				  headers: { 
+				      "Content-Type": "application/json"
+				  },
+				  success: function(data){
+					  alert('ok');
+					  window.location.reload();
+				  }
+			});
+		});
+		
+		$('.runJob').click(function(){
+			var jobName = $.trim($(this).parent().parent().find('td:eq(1)').text());
+			var jobGroup = $.trim($(this).parent().parent().find('td:eq(2)').text());
+			showRunBox(jobName, jobGroup);
+		});
+		
+		$('#runBoxForm').live("submit",function(){
+			var jobName = $('#runBox').find('input[type="hidden"][name="jobName"]').val();
+			var jobGroup = $('#runBox').find('input[type="hidden"][name="jobGroup"]').val();
+			var initialParameter = $.trim($('#initialParameter').val());
+			$.ajax({
+				  url: "/job/man/run",
+				  type: "POST",
+				  dataType: "json",
+				  data: JSON.stringify({
+						 "jobName": jobName,
+						 "jobGroup": jobGroup,
+						 "initialParameter": initialParameter
+					   }),
+				  headers: { 
+				      "Content-Type": "application/json"
+				  },
+				  success: function(data){
+					  $(".popBox").CloseDiv();
+					  alert('ok');
+					  window.location.reload();
+				  },
+				  error: function(xhr, status, error) {
+					  $(".popBox").CloseDiv();
+					  console.log('Request Failure', status, error);
+					  window.location.reload();
+			      }
+			});
+			return false;
+		});
+	
+	    TableUtils.initialize(10);
+	});
+	
+	function showRunBox(jobName, jobGroup){
+		$('.popTitle').text('Run Job Here');
+		var h = '<div style="width: 550px;height: 220px;overflow: auto;padding: 5px;">';
+		h += '<form method="post" id="runBoxForm">';
+		h += '<div id="runBox">';
+		h += '<p>';
+		h += '<input type="hidden" name="jobName" value="'+ jobName +'" />';
+		h += '<input type="hidden" name="jobGroup" value="'+ jobGroup +'" />';
+		h += '<label>Initial Paramerer: </label></p><p>';
+		h += '<textarea name="initialParameter" id="initialParameter"></textarea>';
+		h += '</p><p>';
+		h += '<input type="submit" value="Run" />';
+		h += '</p></div>';
+		h += '</form></div>';
+		$(".popBox").find('.popContent').html(h);
+		$(".popBox").OpenDiv(Utils.getScrollTop() + 120);
+	}
+</script>
+<body>
+    <div th:replace="common/nav::nav"></div>
+    <div th:replace="job/tool::tool"></div>
+    
+    <div id="container" th:fragment="content">
+        <table class="tblCom" cellspacing="0" cellpadding="0">
+		  <thead>
+		    <tr>
+		      <td width="3%">No. </td>
+		      <td class="tdLeft10" width="15%">Job Name</td>
+		      <td class="tdLeft10" width="15%">Job Group</td>
+		      <td class="tdLeft10" width="15%">Trigger Name</td>
+		      <td class="tdLeft10">Trigger Group</td>
+		      <td width="8%">Trigger Status</td>
+		      <td width="10%">Trigger Type</td>
+		      <td width="12%">Action</td>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr th:each="job,index : ${page.content}">
+		      <td width="2%" th:text="${(page.pageNumber-1) * page.pageSize + index.count}"></td>
+		      <td class="tdLeft10" width="15%" th:text="${job.jobName}"></td>
+		      <td class="tdLeft10" width="15%" th:text="${job.jobGroup}"></td>
+		      <td class="tdLeft10" width="15%" th:text="${job.triggerName}"></td>
+		      <td class="tdLeft10" th:text="${job.triggerGroup}"></td>
+		      <td width="8%" th:text="${job.state}"></td>
+		      <td width="10%" th:text="${job.type}"></td>
+		      <td width="12%">
+		      	<a th:href="@{'/ui/job/detail/'+${job.jobName}+'/'+${job.jobGroup}+'/'}">View</a>
+		      	<a class="logJob" th:href="@{'/ui/job/log/'+${job.jobName}+'/'+${job.jobGroup}+'/'+${job.triggerName}+'/'+${job.triggerGroup}+'/'}">Log</a>
+                <a class="runJob" href="javascript:void(0);">Run</a>
+                <a th:if="${job.state=='PAUSED'}" class="resumeJob" href="javascript:void(0);">Resume</a>
+                <a th:if="${job.state!='PAUSED'}" class="pauseJob" href="javascript:void(0);">Pause</a>
+                <a class="deleteJob" href="javascript:void(0);">Delete</a>
+		      </td>
+		    </tr>
+		  </tbody>
+		</table>
+		<div th:replace="common/page::page"></div>
+    </div>
+    <div class="popBox" style="display: none;">
+		<div class="popTop">
+			<span class="popTitle"></span>
+			<span class="popClose" title="Close"></span>
+			<hr color="#d0d0d0"/>
+		</div>
+		<div class="popContent"></div>
+	</div>
+	<div style="clear: both;"></div>
+    <div th:replace="common/footer::footer"></div>
+</body>
+</html>

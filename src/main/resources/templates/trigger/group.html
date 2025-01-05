@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="common/header::header"></div>
+<script type="text/javascript">
+$(function(){
+	$('.pauseTriggerGroup').click(function(){
+		var triggerGroup = $.trim($(this).parent().parent().find('td:eq(1)').text());
+		$.ajax({
+			  url: "/job/man/trigger/pause/" + triggerGroup,
+			  type: "PUT",
+			  headers: {
+			      "Content-Type": "application/json"
+			  },
+			  success: function(data){
+				  alert('ok');
+				  window.location.reload();
+			  }
+		});
+	});
+	
+	$('.resumeTriggerGroup').click(function(){
+		var triggerGroup = $.trim($(this).parent().parent().find('td:eq(1)').text());
+		$.ajax({
+			  url: "/job/man/trigger/resume/" + triggerGroup,
+			  type: "PUT",
+			  headers: {
+			      "Content-Type": "application/json"
+			  },
+			  success: function(data){
+				  alert('ok');
+				  window.location.reload();
+			  }
+		});
+	});
+});
+</script>
+<body>
+
+    <div th:replace="common/nav::nav"></div>
+
+    <div id="container" th:fragment="content">
+        <table class="tblCom" cellspacing="0" cellpadding="0">
+		  <thead>
+		    <tr>
+		      <td width="3%">No. </td>
+		      <td class="tdLeft10">Trigger Group</td>
+		      <td width="10%" class="tdLeft10">Total Trigger Count</td>
+		      <td width="10%" class="tdLeft10">Is Paused</td>
+		      <td width="13%">Action</td>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr th:each="group,index : ${triggerGroups}">
+		      <td width="3%" th:text="${index.count}"></td>
+		      <td class="tdLeft10" th:text="${group.triggerGroup}" ></td>
+		      <td width="10%" class="tdLeft10" th:text="${group.triggerCount}" ></td>
+		      <td width="10%" class="tdLeft10" th:text="${group.paused}" ></td>
+		      <td width="13%">
+		      	<a th:href="@{'/ui/trigger/list/'+${group.triggerGroup}+'/'}">View</a>
+		      	<a th:href="@{'/ui/trigger/status/list/'+${group.triggerGroup}+'/'}">Status</a>
+		      	<a th:href="@{'/ui/trigger/log/'+${group.triggerGroup}+'/'}" href="javascript:void(0);">Log</a>
+		      	<a class="pauseTriggerGroup" href="javascript:void(0);">Pause</a>
+		      	<a class="resumeTriggerGroup" href="javascript:void(0);">Resume</a>
+		      </td>
+		    </tr>
+		  </tbody>
+		</table>
+    </div>
+    
+    <div th:replace="common/footer::footer"></div>
+</body>
+</html>

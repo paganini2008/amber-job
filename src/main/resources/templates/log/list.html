@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:with="contextPath=${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()}">
+<div th:replace="common/header::header"></div>
+<script type="text/javascript">
+  $(function(){
+
+		$('.tblCom').colResizable({
+			  liveDrag:true, 
+	          gripInnerHtml:"<div class='grip'></div>", 
+	          draggingClass:"dragging", 
+	          resizeMode:'fit',
+	          disabledColumns: [0,16,17]
+		});
+		
+	    $('.viewPop').live('click',function(){
+	    	var index = $(this).parent().index();
+	    	var title = $.trim($('.tblCom thead tr').find('td:eq('+index+')').text());
+	        var value = $(this).parent().find('input[type="hidden"]').val();
+	        showLog(title,value);
+	    });
+	    
+	    $('#searchBtn').click(function(){
+	    	var jobNamePattern = $.trim($('#jobNamePattern').val());
+	    	var hasJobName = jobNamePattern != null && jobNamePattern.length > 0;
+	    	var jobGroupPattern = $.trim($('#jobGroupPattern').val());
+	    	var hasJobGroup = jobGroupPattern != null && jobGroupPattern.length > 0;
+	    	var triggerNamePattern = $.trim($('#triggerNamePattern').val());
+	    	var hasTriggerName = triggerNamePattern != null && triggerNamePattern.length > 0;
+	    	var triggerGroupPattern = $.trim($('#triggerGroupPattern').val());
+	    	var hasTriggerGroup = triggerGroupPattern != null && triggerGroupPattern.length > 0;
+	    	
+	    	var url = '';
+			if(hasJobName && hasJobGroup && hasTriggerName && hasTriggerGroup){
+				url = '/ui/job/log/' + jobNamePattern + '/' + jobGroupPattern + '/' + triggerNamePattern + '/' + triggerGroupPattern + '/';
+			}else if(hasJobName && hasJobGroup && !hasTriggerName && !hasTriggerGroup){
+				url = '/ui/job/log/' + jobNamePattern + '/' + jobGroupPattern + '/';
+			}else if(!hasJobName && !hasJobGroup && hasTriggerName && hasTriggerGroup){
+				url = '/ui/trigger/log/' + triggerNamePattern + '/' + triggerGroupPattern + '/';
+			}else if(!hasJobName && hasJobGroup && !hasTriggerName && !hasTriggerGroup){
+				url = '/ui/job/log/' + jobGroupPattern + '/';
+			}else if(!hasJobName && !hasJobGroup && !hasTriggerName && hasTriggerGroup){
+				url = '/ui/trigger/log/' + triggerGroupPattern + '/';
+			}else{
+				url = '/ui/log/';
+			}
+			if(url.length > 0){
+				var failedJobChecked = $('#failedJobChecked').attr('checked');
+				if(failedJobChecked == 'checked'){
+					url += '?status=0';
+				}
+				window.location.href = url;
+			}
+	    });
+	    
+	    TableUtils.initialize(10);
+    });
+  
+	function showLog(title,value){
+		$('.popTitle').text(title);
+		var h = '<div style="width: 500px;height: 300px;overflow: auto;padding: 5px;"><pre>';
+		h += value;
+		h += '</pre></div>';
+		$(".popBox").find('.popContent').html(h);
+		$(".popBox").OpenDiv(Utils.getScrollTop() + 120);
+	}
+</script>
+<body>
+    <div th:replace="common/nav::nav"></div>
+    <div th:replace="log/tool::tool"></div>
+    
+    <div id="container" th:fragment="content" th:with="pageTimeZone='UTC'">
+        <div style="width: 100%; height: auto; overflow-x: auto; clear: both">
+        <table style="width: 200%" class="tblCom" cellspacing="0" cellpadding="0">
+		  <thead>
+		    <tr>
+		      <td width="1.5%">No. </td>
+		      <td class="tdLeft10" width="8%">Job Name</td>
+		      <td class="tdLeft10" width="8%">Job Group</td>
+		      <td class="tdLeft10" width="10%">Trigger Name</td>
+		      <td class="tdLeft10" width="10%">Trigger Group</td>
+		      <td class="tdLeft10">Execution</td>
+		      <td width="3%">Headers</td>
+		      <td width="3%">Description</td>
+		      <td width="3%">Parameter</td>
+		      <td width="3%">Guid</td>
+		      <td width="5%">Scheduler Name</td>
+		      <td width="5%">Scheduler Instance</td>
+		      <td width="5%">Executor Name</td>
+		      <td width="5%">Executor Instance</td>
+		      <td width="2%">Status</td>
+		      <td width="2%">Errors</td>
+		      <td width="5%">Start Time</td>
+		      <td width="5%">End Time</td>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr th:each="log,index : ${page.content}">
+		      <td width="1.5%" th:text="${(page.pageNumber-1) * page.pageSize + index.count}"></td>
+		      <td class="tdLeft10" width="8%" th:text="${log.jobName}"></td>
+		      <td class="tdLeft10" width="8%" th:text="${log.jobGroup}"></td>
+		      <td class="tdLeft10" width="10%" th:text="${log.triggerName}"></td>
+		      <td class="tdLeft10" width="10%" th:text="${log.triggerGroup}"></td>
+		      <td class="tdLeft10" th:if="${log.url} == null" th:text="${log.className}+'#'+${log.method}"></td>
+		      <td th:if="${log.url} != null" th:text="${log.method}+' '+${log.url}"></td>
+		      <td width="3%">
+		      	<a th:if="${log.headers} != null" class="viewPop" href="javascript:void(0);">view</a>
+		      	<input th:if="${log.headers} != null" type="hidden" th:value="${log.headers}" />
+		      </td>
+		      <td width="3%">
+		      	<a th:if="${log.description} != null" class="viewPop" href="javascript:void(0);">view</a>
+		      	<input th:if="${log.description} != null" type="hidden" th:value="${log.description}" />
+		      </td>
+		      <td width="3%">
+		       <a th:if="${log.initialParameter} != null" class="viewPop" href="javascript:void(0);">view</a>
+		       <input th:if="${log.initialParameter} != null" type="hidden" th:value="${log.initialParameter}" />
+		      </td>
+		      <td width="3%" th:text="${log.guid}"></td>
+		      <td width="5%" th:text="${log.jobScheduler}"></td>
+		      <td width="5%" th:text="${log.schedulerInstance}"></td>
+		      <td width="5%" th:text="${log.jobExecutor}"></td>
+		      <td width="5%" th:text="${log.executorInstance}"></td>
+		      <td width="2%" th:text="${log.status}"></td>
+		      <td width="2%">
+		      	<a th:if="${log.errors} != null" class="viewPop" href="javascript:void(0);">view</a>
+		      	<input th:if="${log.errors} != null" type="hidden" th:value="${log.errors}" />
+		      </td>
+		      <td width="5%" th:text="${@requestParameterUtils.formatDateWithTimeZone(log.startTime, pageTimeZone)}"></td>
+		      <td width="5%" th:text="${@requestParameterUtils.formatDateWithTimeZone(log.endTime, pageTimeZone)}"></td>
+		    </tr>
+		  </tbody>
+		</table>
+		</div>
+		<div th:replace="common/page::page"></div>
+    </div>
+    <div class="popBox" style="display: none;">
+		<div class="popTop">
+			<span class="popTitle"></span>
+			<span class="popClose" title="Close"></span>
+			<hr color="#d0d0d0"/>
+		</div>
+		<div class="popContent"></div>
+	</div>
+	<div style="clear: both;"></div>
+    <div th:replace="common/footer::footer"></div>
+</body>
+</html>

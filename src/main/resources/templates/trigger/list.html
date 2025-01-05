@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="common/header::header"></div>
+<script type="text/javascript">
+  $(function () {
+
+    $('.tblCom').colResizable({
+      liveDrag: true,
+      gripInnerHtml: "<div class='grip'></div>",
+      draggingClass: "dragging",
+      resizeMode: 'fit',
+      disabledColumns: [0, 9, 10]
+    });
+
+    TableUtils.initialize(10);
+
+    $('#searchBtn').click(function () {
+      var triggerNamePattern = $.trim($('#triggerNamePattern').val());
+      var url = window.location.href;
+      if (url.indexOf('?') > 0) {
+        url = url + '&triggerNamePattern=' + triggerNamePattern;
+      } else {
+        url = url + '?triggerNamePattern=' + triggerNamePattern;
+      }
+      window.location.href = url;
+    });
+
+    $('.deleteTrigger').click(function () {
+      var con = window.confirm("Are you sure to delete this trigger?");
+      if (con == false) {
+        return;
+      }
+      var triggerName = $.trim($(this).parent().parent().find('td:eq(1)').text());
+      var triggerGroup = $.trim($(this).parent().parent().find('td:eq(2)').text());
+      $.ajax({
+        url: "/job/man/trigger/delete/" + triggerGroup + "/" + triggerName,
+        type: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        success: function (data) {
+          alert('ok');
+          window.location.reload();
+        }
+      });
+    });
+  });
+</script>
+<body>
+<div th:replace="common/nav::nav"></div>
+<div th:replace="trigger/tool::tool"></div>
+
+<div id="container" th:fragment="content" th:with="pageTimeZone='UTC'">
+  <table class="tblCom" cellspacing="0" cellpadding="0">
+    <thead>
+    <tr>
+      <td width="3%">No.</td>
+      <td class="tdLeft10" width="20%">Trigger Name</td>
+      <td class="tdLeft10" width="20%">Trigger Group</td>
+      <td width="9%">Start Time</td>
+      <td>Period</td>
+      <td width="8%">Cron</td>
+      <td>Repeat Count</td>
+      <td width="9%">End Time</td>
+      <td width="5%">Priority</td>
+      <td>Calendar</td>
+      <td width="5%">Action</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="trigger,index : ${page.content}">
+      <td width="3%" th:text="${(page.pageNumber-1) * page.pageSize + index.count}"></td>
+      <td class="tdLeft10" width="20%" th:text="${trigger.triggerName}"></td>
+      <td class="tdLeft10" width="20%" th:text="${trigger.triggerGroup}"></td>
+      <td width="9%"
+          th:text="${@requestParameterUtils.formatDateWithTimeZone(trigger.startTime, pageTimeZone)}"></td>
+      <td th:text="${trigger.formattedPeriod}"></td>
+      <td width="8%" th:text="${trigger.cron}"></td>
+      <td th:text="${trigger.repeatCount}"></td>
+      <td width="9%"
+          th:text="${@requestParameterUtils.formatDateWithTimeZone(trigger.endTime, pageTimeZone)}"></td>
+      <td width="5%" th:text="${trigger.priority}"></td>
+      <td th:text="${trigger.calendarName}"></td>
+      <td width="5%">
+        <a th:href="@{'/ui/trigger/log/'+${trigger.triggerName}+'/'+${trigger.triggerGroup}+'/'}">Log</a>
+        <a class="deleteTrigger" href="javascript:void(0);">Delete</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <div th:replace="common/page::page"></div>
+</div>
+
+<div th:replace="common/footer::footer"></div>
+</body>
+</html>

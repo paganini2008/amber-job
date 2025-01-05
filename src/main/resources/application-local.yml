@@ -1,0 +1,29 @@
+#spring settings
+spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:8525
+        instance:
+          prefer-ip: true
+  application:
+    hostname: localhost
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    password: 123456
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/bhs?characterEncoding=utf8&allowMultiQueries=true&useSSL=false&stringtype=unspecified
+    username: fengy
+    password: 123456
+
+discovery:
+  client:
+    ping:
+      usePublicIp: false
+
+doodler:
+  global-application-event:
+    enabled: true

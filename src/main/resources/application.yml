@@ -1,0 +1,81 @@
+server:
+  port: 39998
+  undertow:
+    buffer-size: 1024
+    direct-buffers: true
+    threads:
+      io: 4
+      worker: 256
+  exposeServlets:
+    - /login
+    - /logout
+  credentials:
+    user: admin
+    password: admin123
+spring:
+  application:
+    name: doodler-quartz-service
+  profiles:
+    active: local
+  mvc:
+    dispatch-options-request: true
+    servlet:
+      path: /
+    favicon:
+      enabled: false
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  resources:
+    add-mappings: false
+  redis:
+    lettuce:
+      pool:
+        max-active: 20
+        max-idle: 2
+        min-idle: 1
+        max-wait: 10000
+  datasource:
+    hikari:
+      connection-timeout: 2000
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 200000
+      auto-commit: true
+      max-lifetime: 1800000
+      connection-test-query: select 1
+  thymeleaf:
+    cache: false
+    encoding: UTF8
+
+
+# actuator settings
+management:
+  server:
+    port: 8998
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+      base-path: /monitor
+  jmx:
+      exposure:
+        include: '*'
+  metrics:
+    tags:
+       application: ${spring.application.name}
+  health:
+    threadPool:
+      enabled: false
+
+quartz:
+  admin:
+    ui:
+      enabled: true
+
+logging:
+  file:
+    name: logs/app-error.log
+

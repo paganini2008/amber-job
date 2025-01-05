@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <div id="top" th:fragment="nav">
+        <div id="logoText">
+            <label class="logoCircle red"></label>
+        	<label class="logoCircle yellow"></label>
+        	<label class="logoCircle green"></label>
+        	Quartz Administrator Console
+        </div>
+        <div id="toolBox">
+        	<a href="/logout">Logout</a>
+        </div>
+        <nav id="navBox">
+            <a href="/ui/job/group/">Job</a>
+            <a href="/ui/trigger/group/">Trigger</a>
+            <a href="/ui/log/">Log</a>
+            <a href="/ui/about/">About</a>
+        </nav>
+    </div>
+</html>

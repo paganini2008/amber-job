@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="common/header::header"></div>
+<script type="text/javascript">
+  $(function () {
+    $('.pauseTrigger').click(function () {
+      var triggerName = $.trim($(this).parent().parent().find('td:eq(1)').text());
+      var triggerGroup = $.trim($(this).parent().parent().find('td:eq(2)').text());
+      $.ajax({
+        url: "/job/man/trigger/pause/" + triggerGroup + "/" + triggerName,
+        type: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        success: function (data) {
+          alert('ok');
+          window.location.reload();
+        }
+      });
+    });
+
+    $('.resumeTrigger').click(function () {
+      var triggerName = $.trim($(this).parent().parent().find('td:eq(1)').text());
+      var triggerGroup = $.trim($(this).parent().parent().find('td:eq(2)').text());
+      $.ajax({
+        url: "/job/man/trigger/resume/" + triggerGroup + "/" + triggerName,
+        type: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        success: function (data) {
+          alert('ok');
+          window.location.reload();
+        }
+      });
+    });
+
+    $('.deleteTrigger').click(function () {
+      var con = window.confirm("Are you sure to delete this trigger?");
+      if (con == false) {
+        return;
+      }
+      var triggerName = $.trim($(this).parent().parent().find('td:eq(1)').text());
+      var triggerGroup = $.trim($(this).parent().parent().find('td:eq(2)').text());
+      $.ajax({
+        url: "/job/man/trigger/delete/" + triggerGroup + "/" + triggerName,
+        type: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        success: function (data) {
+          alert('ok');
+          window.location.href = '/ui/job/group/';
+        }
+      });
+    });
+
+  });
+</script>
+<body>
+<div th:replace="common/nav::nav"></div>
+<div id="container" th:fragment="content" th:with="pageTimeZone='UTC'">
+  <div id="jobDetailBox">
+    <div class="jobDetail">
+      <label>Job Name: </label>
+      <span th:text="${jobDefination.jobName}"></span>
+    </div>
+    <div class="jobDetail">
+      <label>Job Group: </label>
+      <span th:text="${jobDefination.jobGroup}"></span>
+    </div>
+    <div class="jobDetail">
+      <label>Job Class: </label>
+      <span th:text="${jobDefination.className}"></span>
+    </div>
+    <div class="jobDetail">
+      <label>Job Method: </label>
+      <span th:text="${jobDefination.method}"></span>
+    </div>
+    <div class="jobDetail">
+      <label>Job URL: </label>
+      <span th:text="${jobDefination.url}"></span>
+    </div>
+    <div class="jobDetail">
+      <label>Maximum Retry Count: </label>
+      <span th:text="${jobDefination.maxRetryCount}"></span>
+    </div>
+    <div class="jobDetail">
+      <label>Initial Parameter: </label>
+      <span th:text="${jobDefination.initialParameter}"></span>
+    </div>
+    <div class="jobDetail">
+      <label>Job Description: </label>
+      <span th:text="${jobDefination.description}"></span>
+    </div>
+  </div>
+
+  <div class="jobTriggerBox">
+    <p class="jobTriggerDetailTitle">Trigger Detail: </p>
+    <table class="tblCom" cellspacing="0" cellpadding="0">
+      <thead>
+      <tr>
+        <td width="2%">No.</td>
+        <td class="tdLeft10" width="13%">Trigger Name</td>
+        <td class="tdLeft10" width="14%">Trigger Group</td>
+        <td width="8%">Start Time</td>
+        <td width="8%">Period</td>
+        <td>Cron</td>
+        <td>Repeat Count</td>
+        <td width="9%">End Time</td>
+        <td width="5%">Priority</td>
+        <td width="4%">Calendar</td>
+        <td>Description</td>
+        <td width="6%">Action</td>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="trigger, index : ${triggerDefinations}">
+        <td width="2%" th:text="${index.count}"></td>
+        <td class="tdLeft10" width="13%" th:text="${trigger.triggerName}"></td>
+        <td class="tdLeft10" width="14%" th:text="${trigger.triggerGroup}"></td>
+        <td width="8%"
+            th:text="${@requestParameterUtils.formatDateWithTimeZone(trigger.startTime, pageTimeZone)}"></td>
+        <td width="8%" th:text="${trigger.formattedPeriod}"></td>
+        <td th:text="${trigger.cron}"></td>
+        <td th:text="${trigger.repeatCount}"></td>
+        <td width="9%"
+            th:text="${@requestParameterUtils.formatDateWithTimeZone(trigger.endTime, pageTimeZone)}"></td>
+        <td width="5%" th:text="${trigger.priority}"></td>
+        <td width="4%" th:text="${trigger.calendarName}"></td>
+        <td th:text="${trigger.description}"></td>
+        <td width="6%">
+          <a class="logTrigger"
+             th:href="@{'/ui/trigger/log/'+${trigger.triggerName}+'/'+${trigger.triggerGroup}+'/'}">Log</a>
+          <a class="deleteTrigger" href="javascript:void(0);">Delete</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="jobTriggerBox">
+    <p class="jobTriggerDetailTitle">Trigger Status: </p>
+    <table class="tblCom" cellspacing="0" cellpadding="0">
+      <thead>
+      <tr>
+        <td width="2%">No.</td>
+        <td class="tdLeft10" width="13%">Trigger Name</td>
+        <td class="tdLeft10" width="14%">Trigger Group</td>
+        <td width="5%">State</td>
+        <td width="7%">Type</td>
+        <td width="8%">Start Time</td>
+        <td width="8%">Next Fired Time</td>
+        <td width="8%">Prev Fired Time</td>
+        <td width="8%">Final Fired Time</td>
+        <td width="8%">End Time</td>
+        <td width="5%">Priority</td>
+        <td width="4%">Misfire</td>
+        <td width="4%">Action</td>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="trigger, index : ${triggerStatusVos}">
+        <td width="2%" th:text="${index.count}"></td>
+        <td class="tdLeft10" width="13%" th:text="${trigger.triggerName}"></td>
+        <td class="tdLeft10" width="14%" th:text="${trigger.triggerGroup}"></td>
+        <td width="5%" th:text="${trigger.state}"></td>
+        <td width="7%" th:text="${trigger.type}"></td>
+        <td width="8%"
+            th:text="${@requestParameterUtils.formatDateWithTimeZone(trigger.startTime, pageTimeZone)}"></td>
+        <td width="8%"
+            th:text="${@requestParameterUtils.formatDateWithTimeZone(trigger.nextFireTime, pageTimeZone)}"></td>
+        <td width="8%"
+            th:text="${@requestParameterUtils.formatDateWithTimeZone(trigger.prevFireTime, pageTimeZone)}"></td>
+        <td width="8%"
+            th:text="${@requestParameterUtils.formatDateWithTimeZone(trigger.finalFireTime, pageTimeZone)}"></td>
+        <td width="8%"
+            th:text="${@requestParameterUtils.formatDateWithTimeZone(trigger.endTime, pageTimeZone)}"></td>
+        <td width="5%" th:text="${trigger.priority}"></td>
+        <td width="4%" th:text="${trigger.misfireInstr}"></td>
+        <td width="4%">
+          <a th:if="${trigger.state=='PAUSED'}" class="resumeTrigger" href="javascript:void(0);">Resume</a>
+          <a th:if="${trigger.state!='PAUSED'}" class="pauseTrigger" href="javascript:void(0);">Pause</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div th:replace="common/footer::footer"></div>
+</body>
+</html>
