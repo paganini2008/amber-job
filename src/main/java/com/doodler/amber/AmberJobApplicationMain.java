@@ -1,4 +1,4 @@
-package com.doodler.quartzadmin;
+package com.doodler.amber;
 
 import java.util.TimeZone;
 import org.springframework.boot.SpringApplication;
@@ -10,7 +10,7 @@ import com.github.doodler.common.quartz.EnableQuartz.Mode;
 
 /**
  * 
- * @Description: QuartzAdminApplicationMain
+ * @Description: AmberJobApplicationMain
  * @Author: Fred Feng
  * @Date: 01/01/2025
  * @Version 1.0.0
@@ -18,14 +18,14 @@ import com.github.doodler.common.quartz.EnableQuartz.Mode;
 @EnableQuartz(Mode.SCHEDULER)
 @EnableDiscoveryClient
 @SpringBootApplication
-public class QuartzAdminApplicationMain {
+public class AmberJobApplicationMain {
 
     static {
         TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
     }
 
     public static void main(String[] args) {
-        SpringApplication sa = new SpringApplication(QuartzAdminApplicationMain.class);
+        SpringApplication sa = new SpringApplication(AmberJobApplicationMain.class);
         sa.addListeners(new ApplicationPidFileWriter());
         sa.run(args);
     }

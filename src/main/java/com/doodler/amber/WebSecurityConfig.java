@@ -1,4 +1,4 @@
-package com.doodler.quartzadmin;
+package com.doodler.amber;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

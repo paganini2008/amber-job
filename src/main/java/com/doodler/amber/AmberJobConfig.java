@@ -1,4 +1,4 @@
-package com.doodler.quartzadmin;
+package com.doodler.amber;
 
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
@@ -11,13 +11,13 @@ import com.github.doodler.common.quartz.scheduler.JobLogService;
 
 /**
  * 
- * @Description: QuartzAdminConfig
+ * @Description: AmberJobConfig
  * @Author: Fred Feng
  * @Date: 01/01/2025
  * @Version 1.0.0
  */
 @Configuration(proxyBeanMethods = false)
-public class QuartzAdminConfig {
+public class AmberJobConfig {
 
     @Primary
     @Bean
