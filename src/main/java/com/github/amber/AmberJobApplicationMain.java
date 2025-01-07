@@ -1,4 +1,4 @@
-package com.github.doodler.amber;
+package com.github.amber;
 
 import java.util.TimeZone;
 import org.springframework.boot.SpringApplication;

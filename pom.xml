@@ -80,7 +80,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<mainClass>com.github.doodler.amber.AmberJobApplicationMain</mainClass>
+					<mainClass>com.github.amber.AmberJobApplicationMain</mainClass>
 				</configuration>
 			</plugin>
 

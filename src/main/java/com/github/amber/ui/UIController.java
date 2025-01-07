@@ -1,4 +1,4 @@
-package com.github.doodler.amber.ui;
+package com.github.amber.ui;
 
 import static com.github.doodler.common.quartz.JobConstants.DEFAULT_JOB_GROUP_NAME;
 import static com.github.doodler.common.quartz.JobConstants.DEFAULT_JOB_TRIGGER_GROUP_NAME;
@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.github.doodler.amber.utils.Tip;
-import com.github.doodler.amber.utils.TipContext;
+import com.github.amber.utils.Tip;
+import com.github.amber.utils.TipContext;
 import com.github.doodler.common.quartz.executor.JobDefination;
 import com.github.doodler.common.quartz.executor.TriggerDefination;
 import com.github.doodler.common.quartz.scheduler.JobGroupStatusVo;

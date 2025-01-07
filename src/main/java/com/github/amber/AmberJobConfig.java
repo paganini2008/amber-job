@@ -1,4 +1,4 @@
-package com.github.doodler.amber;
+package com.github.amber;
 
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;

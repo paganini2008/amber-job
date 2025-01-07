@@ -1,4 +1,4 @@
-package com.github.doodler.amber.utils;
+package com.github.amber.utils;
 
 /**
  * @Description: TipContext

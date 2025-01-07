@@ -1,4 +1,4 @@
-package com.github.doodler.amber;
+package com.github.amber;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
